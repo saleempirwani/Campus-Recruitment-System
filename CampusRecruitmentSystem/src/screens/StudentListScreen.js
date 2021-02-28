@@ -1,12 +1,11 @@
-import React, {Component} from 'react';
-import {Container, Header, Content, List, ListItem, Text} from 'native-base';
+import React from 'react';
+import {Container, Content, List, ListItem, Text} from 'native-base';
 
 const StudentListScreen = ({navigation}) => {
   const data = ['gddgdgh', 'xffgdg', 'dfgdgdfg'];
 
   return (
     <Container>
-      <Header />
       <Content>
         <List>
           {data.map((d, i) => (

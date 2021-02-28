@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
+import globalStyle from '../styles/styles';
 import Splash from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -48,38 +49,6 @@ function Navigation() {
     }, 2000);
   }, []);
 
-  /*if (isLoading) {
-    return <Splash />;
-  } else {
-    if (state.userToken === null) {
-      return (
-        <NavigationContainer>
-          <AuthStack />
-        </NavigationContainer>
-      );
-    } else {
-      if (state.userType === 'student') {
-        return (
-          <NavigationContainer>
-            <CompanyStack />
-          </NavigationContainer>
-        );
-      } else if (state.userType === 'company') {
-        return (
-          <NavigationContainer>
-            <StudentStack />
-          </NavigationContainer>
-        );
-      } else {
-        return (
-          <NavigationContainer>
-            <AdminStack />
-          </NavigationContainer>
-        );
-      }
-    }
-  }*/
-
   return (
     <NavigationContainer>
       {isLoading ? (
@@ -87,9 +56,9 @@ function Navigation() {
       ) : state.userToken === null ? (
         <AuthStack />
       ) : state.userType === 'student' ? (
-        <StudentStack />
-      ) : state.userType === 'company' ? (
         <CompanyStack />
+      ) : state.userType === 'company' ? (
+        <StudentStack />
       ) : (
         <AdminStack />
       )}
@@ -126,10 +95,15 @@ const AdminStack = () => {
         name="Menu"
         component={MenuScreen}
         options={{
+          headerStyle: {
+            backgroundColor: globalStyle.themeBlueBack.backgroundColor,
+          },
+          headerTintColor: '#fff',
           headerLeft: null,
           headerRight: () => (
             <Button
-              primary
+              small
+              style={{backgroundColor: '#fff', marginRight: 10}}
               onPress={() => {
                 dispatch(singOut());
               }}>
@@ -143,12 +117,19 @@ const AdminStack = () => {
         name="Companies"
         component={CompanyScreen}
         options={{
+          headerStyle: {
+            backgroundColor: globalStyle.themeBlueBack.backgroundColor,
+          },
+          headerTintColor: '#fff',
+          headerLeft: null,
           headerRight: () => (
             <Button
-              primary
+              small
+              style={{backgroundColor: '#fff', marginRight: 10}}
               onPress={() => {
                 dispatch(singOut());
                 dispatch(getCompanyData([]));
+                dispatch(getStudentData([]));
               }}>
               <Text>Logout</Text>
             </Button>
@@ -159,12 +140,19 @@ const AdminStack = () => {
         name="Students"
         component={StudentListScreen}
         options={{
+          headerStyle: {
+            backgroundColor: globalStyle.themeBlueBack.backgroundColor,
+          },
+          headerTintColor: '#fff',
+          headerLeft: null,
           headerRight: () => (
             <Button
-              primary
+              small
+              style={{backgroundColor: '#fff', marginRight: 10}}
               onPress={() => {
                 dispatch(singOut());
                 dispatch(getStudentData([]));
+                dispatch(getCompanyData([]));
               }}>
               <Text>Logout</Text>
             </Button>
@@ -180,12 +168,30 @@ const AdminStack = () => {
 // CompanyScreen
 
 const CompanyStack = () => {
+  const dispatch = useDispatch();
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="Companies"
         component={CompanyScreen}
-        options={{headerShown: false}}
+        options={{
+          headerStyle: {
+            backgroundColor: globalStyle.themeBlueBack.backgroundColor,
+          },
+          headerTintColor: '#fff',
+          headerLeft: null,
+          headerRight: () => (
+            <Button
+              small
+              style={{backgroundColor: '#fff', marginRight: 10}}
+              onPress={() => {
+                dispatch(singOut());
+                dispatch(getCompanyData([]));
+              }}>
+              <Text>Logout</Text>
+            </Button>
+          ),
+        }}
       />
     </Stack.Navigator>
   );
@@ -200,10 +206,15 @@ const StudentStack = () => {
         name="Students"
         component={StudentListScreen}
         options={{
+          headerStyle: {
+            backgroundColor: globalStyle.themeBlueBack.backgroundColor,
+          },
+          headerTintColor: '#fff',
           headerLeft: null,
           headerRight: () => (
             <Button
-              primary
+              small
+              style={{backgroundColor: '#fff', marginRight: 10}}
               onPress={() => {
                 dispatch(singOut());
                 dispatch(getStudentData([]));

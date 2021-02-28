@@ -21,13 +21,13 @@ function Login({navigation}) {
 
   // Login into Firebase
   const login = () => {
+    dispatch(signIn(credential, userType));
     const {email, password} = credential;
     if (
       emptyFieldValidation(email) &&
       emptyFieldValidation(password) &&
       emailValidation(email)
     ) {
-      // dispatch(signIn(credential, userType));
       clear();
     }
   };

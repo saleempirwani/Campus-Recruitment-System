@@ -15,10 +15,8 @@ export const signIn = ({email, password}, userType = null) => async (
   dispatch,
 ) => {
   let token = null,
-    home = null,
-    type = null,
     some = true;
-
+  /*
   try {
     let response = await firebase
       .auth()
@@ -29,55 +27,50 @@ export const signIn = ({email, password}, userType = null) => async (
   } catch (e) {
     alert(e.message);
     some = false;
-  }
+  }*/
 
-  /*if (token) {
+  if (true && userType) {
     try {
       firebase
         .database()
-        .ref('users')
+        .ref(`users/${userType}`)
         .on('value', (snapshot) => {
           let users = snapshot.val();
-          let data = users == null ? {} : users;
-          let donor = data.donor;
-          let acceptor = data.acceptor;
-
-          if (donor) {
-            type = findUserType(donor, email);
-          }
-          if (type == null) {
-            type = findUserType(acceptor, email);
-          }
+          let isUserExist;
+          isUserExist = Object.values(users).map((user) =>
+            user.email === email ? true : false,
+          );
+          console.log('users =>', isUserExist);
         });
     } catch (e) {
       console.log('ERROR action.js/signIn', e.message);
     }
-  }*/
+  }
 
-  if (type) {
+  if (userType) {
     storeData('userToken', token);
 
-    if (type === 'admin') {
-      home = null;
-    } else if (type === 'student') {
-      home = 'donor';
-      storeData('home', home);
-    } else if (type === 'company') {
-      home = 'donor';
-      storeData('home', home);
+    if (userType === 'admin') {
+      userType = null;
+    } else if (userType === 'student') {
+      userType = 'donor';
+      storeData('userType', userType);
+    } else if (userType === 'company') {
+      userType = 'donor';
+      storeData('userType', userType);
     }
   } else {
     if (some) alert('Something went wrong, could not sign in.');
     token = null;
   }
 
-  console.log('token', token, 'Type', type);
+  console.log('token', token, 'Type', userType);
 
   return dispatch({
     type: SIGN_IN,
     payload: {
       token: token,
-      home: home,
+      userType: userType,
     },
   });
 };
@@ -131,7 +124,7 @@ export const signUp = (data, userType = null) => async (dispatch) => {
     token = null;
   }
 
-  // console.log('token', token, 'path', path);
+  console.log('token', token, 'path', path, data, userType);
 
   return dispatch({
     type: SIGN_UP,
@@ -178,5 +171,3 @@ export const getStudentData = (std) => {
     payload: std,
   };
 };
-
-
