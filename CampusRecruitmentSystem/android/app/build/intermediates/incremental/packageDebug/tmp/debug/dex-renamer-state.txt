@@ -1,0 +1,4 @@
+#Sun Feb 28 11:53:10 PKT 2021
+base.0=/home/selim/My Drive/Courses/Web and Mobile Development/Projects/REACT NATIVE PROEJCT/Campus-Recruitment-System/CampusRecruitmentSystem/android/app/build/intermediates/dex/debug/mergeDexDebug/out/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
