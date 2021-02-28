@@ -1,18 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {restoreToken, singOut, getDonorData} from '../redux/actions/actions';
+import {
+  restoreToken,
+  singOut,
+  getCompanyData,
+  getStudentData,
+} from '../redux/actions/actions';
 
 import {Button, Text} from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
+import Splash from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
-import DonorDetailsScreen from '../screens/DonorDetailsScreen';
-import HomeScreen from '../screens/HomeScreen';
-import Splash from '../screens/SplashScreen';
-import DonorScreen from '../screens/DonorScreen';
+import StudentDetailScreen from '../screens/StudentDetailScreen';
+import CompanyScreen from '../screens/CompanyScreen';
+import MenuScreen from '../screens/MenuScreen';
+import StudentListScreen from '../screens/StudentListScreen';
 
 const Stack = createStackNavigator();
 
@@ -24,15 +30,15 @@ function Navigation() {
 
   useEffect(() => {
     const bootstrapAsync = async () => {
-      let userToken, home;
+      let userToken, userType;
 
       try {
         userToken = await AsyncStorage.getItem('userToken');
-        home = await AsyncStorage.getItem('home');
+        userType = await AsyncStorage.getItem('userType');
       } catch (e) {
         console.log('Error: ', e.message);
       }
-      dispatch(restoreToken(userToken, home));
+      dispatch(restoreToken(userToken, userType));
     };
 
     bootstrapAsync();
@@ -42,16 +48,50 @@ function Navigation() {
     }, 2000);
   }, []);
 
+  /*if (isLoading) {
+    return <Splash />;
+  } else {
+    if (state.userToken === null) {
+      return (
+        <NavigationContainer>
+          <AuthStack />
+        </NavigationContainer>
+      );
+    } else {
+      if (state.userType === 'student') {
+        return (
+          <NavigationContainer>
+            <CompanyStack />
+          </NavigationContainer>
+        );
+      } else if (state.userType === 'company') {
+        return (
+          <NavigationContainer>
+            <StudentStack />
+          </NavigationContainer>
+        );
+      } else {
+        return (
+          <NavigationContainer>
+            <AdminStack />
+          </NavigationContainer>
+        );
+      }
+    }
+  }*/
+
   return (
     <NavigationContainer>
       {isLoading ? (
         <Splash />
-      ) : state.userToken == null ? (
+      ) : state.userToken === null ? (
         <AuthStack />
-      ) : state.home === null ? (
-        <HomeStack /> // Acceptor
+      ) : state.userType === 'student' ? (
+        <StudentStack />
+      ) : state.userType === 'company' ? (
+        <CompanyStack />
       ) : (
-        <DonorStack />
+        <AdminStack />
       )}
     </NavigationContainer>
   );
@@ -77,28 +117,14 @@ const AuthStack = () => {
   );
 };
 
-// DonorScreens
-
-const DonorStack = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Donor"
-        component={DonorScreen}
-        options={{title: 'Home', headerShown: false}}
-      />
-    </Stack.Navigator>
-  );
-};
-
-// Acceptor Screens
-const HomeStack = () => {
+// Admin Screens:
+const AdminStack = () => {
   const dispatch = useDispatch();
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home"
-        component={HomeScreen}
+        name="Menu"
+        component={MenuScreen}
         options={{
           headerLeft: null,
           headerRight: () => (
@@ -106,7 +132,6 @@ const HomeStack = () => {
               primary
               onPress={() => {
                 dispatch(singOut());
-                dispatch(getDonorData([]));
               }}>
               <Text>Logout</Text>
             </Button>
@@ -114,7 +139,82 @@ const HomeStack = () => {
         }}
       />
 
-      <Stack.Screen name="Donor Details" component={DonorDetailsScreen} />
+      <Stack.Screen
+        name="Companies"
+        component={CompanyScreen}
+        options={{
+          headerRight: () => (
+            <Button
+              primary
+              onPress={() => {
+                dispatch(singOut());
+                dispatch(getCompanyData([]));
+              }}>
+              <Text>Logout</Text>
+            </Button>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="Students"
+        component={StudentListScreen}
+        options={{
+          headerRight: () => (
+            <Button
+              primary
+              onPress={() => {
+                dispatch(singOut());
+                dispatch(getStudentData([]));
+              }}>
+              <Text>Logout</Text>
+            </Button>
+          ),
+        }}
+      />
+
+      <Stack.Screen name="Student Details" component={StudentDetailScreen} />
+    </Stack.Navigator>
+  );
+};
+
+// CompanyScreen
+
+const CompanyStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Companies"
+        component={CompanyScreen}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+};
+
+// StudentScreen Screens
+const StudentStack = () => {
+  const dispatch = useDispatch();
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Students"
+        component={StudentListScreen}
+        options={{
+          headerLeft: null,
+          headerRight: () => (
+            <Button
+              primary
+              onPress={() => {
+                dispatch(singOut());
+                dispatch(getStudentData([]));
+              }}>
+              <Text>Logout</Text>
+            </Button>
+          ),
+        }}
+      />
+
+      <Stack.Screen name="Student Details" component={StudentDetailScreen} />
     </Stack.Navigator>
   );
 };

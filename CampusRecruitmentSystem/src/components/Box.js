@@ -1,22 +1,17 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import {Card, CardItem, Body, Button, Text} from 'native-base';
-import {CardHeader, CardContent} from './CardItems';
+import {Card, CardItem, Body} from 'native-base';
+import {CardContent} from './CardItems';
 
-const Box = ({donor, navigation}) => {
+const Box = ({comp}) => {
   return (
     <Card style={styles.card}>
-      <CardHeader name={donor.name} blood={donor.blood} />
       <CardItem>
         <Body>
-          <CardContent item="Phone" value={donor.phone} />
-          <CardContent item="Address" value={donor.address} />
-          <Button
-            style={styles.btn}
-            full
-            onPress={() => navigation.navigate('Donor Details', donor)}>
-            <Text>More</Text>
-          </Button>
+          <CardContent item="Company Name" value={comp.name} />
+          <CardContent item="Looking for" value={comp.need} />
+          <CardContent item="Phone" value={comp.phone} />
+          <CardContent item="Address" value={comp.address} />
         </Body>
       </CardItem>
     </Card>

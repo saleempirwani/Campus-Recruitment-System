@@ -5,8 +5,9 @@ import {
   RESTORE_TOKEN,
   SIGN_IN,
   SIGN_OUT,
-  GET_DATA,
   SIGN_UP,
+  GET_COMP_DATA,
+  GET_STD_DATA,
 } from '../../constants';
 
 // SIGN_IN FUNCTION HERE...
@@ -82,9 +83,8 @@ export const signIn = ({email, password}, userType = null) => async (
 };
 
 // SIGN_UP FUNCTION HERE...
-export const signUp = (data, userType) => async (dispatch) => {
+export const signUp = (data, userType = null) => async (dispatch) => {
   let token = null,
-    home = null,
     path = null,
     some = true;
 
@@ -105,16 +105,12 @@ export const signUp = (data, userType) => async (dispatch) => {
   }
 
   // console.log('USER DATA @ SIGNUP', data);
-  if (token) {
-    if (userType === 'acceptor') {
-      path = 'users/acceptor';
-      home = null;
-    }
-    // DonorScreen
-    else if (userType === 'donor') {
-      path = '/users/donor';
-      home = 'donor';
-      storeData('home', home);
+  if (token && userType) {
+    if (userType === 'student') {
+      path = 'users/student';
+    } else if (userType === 'company') {
+      path = '/users/company';
+      storeData('userType', userType);
     } else {
       alert('Something went wrong');
     }
@@ -141,7 +137,7 @@ export const signUp = (data, userType) => async (dispatch) => {
     type: SIGN_UP,
     payload: {
       token: token,
-      home: home,
+      userType: userType,
     },
   });
 };
@@ -149,36 +145,38 @@ export const signUp = (data, userType) => async (dispatch) => {
 export const singOut = () => async (dispatch) => {
   await firebase.auth().signOut();
   removeData('userToken');
-  removeData('home');
+  removeData('userType');
   return dispatch({type: SIGN_OUT});
 };
 
-export const restoreToken = (userToken, home) => {
+export const restoreToken = (userToken, userType) => {
   return {
     type: RESTORE_TOKEN,
     payload: {
       token: userToken,
-      home: home,
+      userType: userType,
     },
   };
 };
 
-export const getDonorData = (donor) => {
-  console.log('getDonorData', donor);
+// GETTING DATA
+
+export const getCompanyData = (comp) => {
+  console.log('getCompanyData', comp);
 
   return {
-    type: GET_DATA,
-    payload: donor,
+    type: GET_COMP_DATA,
+    payload: comp,
   };
 };
 
-// FIND USER IS DONOR OR A ACCEPTOR
-const findUserType = (data, email) => {
-  let type = null;
-  let keys = Object.keys(data);
-  if (keys.length) {
-    let key = keys.filter((k) => data[k].email == email);
-    type = key.length ? data[key[0]].userType : null;
-  }
-  return type;
+export const getStudentData = (std) => {
+  console.log('getStudentData', std);
+
+  return {
+    type: GET_COMP_DATA,
+    payload: std,
+  };
 };
+
+

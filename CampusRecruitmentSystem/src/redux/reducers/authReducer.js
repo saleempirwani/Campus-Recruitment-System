@@ -4,7 +4,7 @@ const initialState = {
   isLoading: true,
   isSignout: false,
   userToken: null,
-  home: null,
+  userType: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -13,7 +13,7 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         userToken: action.payload.token,
-        home: action.payload.home,
+        userType: action.payload.userType,
         isLoading: false,
       };
     case SIGN_IN:
@@ -23,14 +23,14 @@ const authReducer = (state = initialState, action) => {
         isSignout: false,
         isLoading: false,
         userToken: action.payload.token,
-        home: action.payload.home,
+        userType: action.payload.userType,
       };
     case SIGN_OUT:
       return {
         ...state,
         isSignout: true,
         userToken: null,
-        home: null,
+        userType: null,
       };
     default:
       return state;
