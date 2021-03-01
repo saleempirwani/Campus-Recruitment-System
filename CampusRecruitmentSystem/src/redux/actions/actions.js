@@ -23,14 +23,16 @@ export const signIn = ({email, password}, userType = null) => async (
     let response = await firebase
       .auth()
       .signInWithEmailAndPassword(email, password);
-    if (response && response.user) {
-      token = response.user.uid;
+    let uid = response.user.uid;
+    if (uid) {
+      token = uid;
     }
   } catch (e) {
     alert(e.message);
     some = false;
   }
 
+  console.log('******', token);
   if (token && userType) {
     try {
       firebase
@@ -42,7 +44,7 @@ export const signIn = ({email, password}, userType = null) => async (
           isUserExist = Object.values(users).map((user) =>
             user.email === email ? true : false,
           );
-          // console.log('users =>', isUserExist);
+          console.log('users =>', isUserExist);
 
           if (userType === 'company') {
             standard = Object.values(users).map((user) =>
@@ -55,8 +57,9 @@ export const signIn = ({email, password}, userType = null) => async (
       console.log('ERROR action.js/signIn', e.message);
     }
   }
-
+  // console.log(isUserExist);
   if (isUserExist.length && isUserExist[0]) {
+    // isUserExist = [];
     storeData('userToken', token);
     storeData('userType', userType);
   } else {
