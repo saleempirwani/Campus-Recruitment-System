@@ -5,6 +5,7 @@ const initialState = {
   isSignout: false,
   userToken: null,
   userType: null,
+  standard: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -14,6 +15,7 @@ const authReducer = (state = initialState, action) => {
         ...state,
         userToken: action.payload.token,
         userType: action.payload.userType,
+        standard: action.payload.standard,
         isLoading: false,
       };
     case SIGN_IN:
@@ -24,6 +26,7 @@ const authReducer = (state = initialState, action) => {
         isLoading: false,
         userToken: action.payload.token,
         userType: action.payload.userType,
+        standard: action.payload.standard,
       };
     case SIGN_OUT:
       return {
@@ -31,6 +34,7 @@ const authReducer = (state = initialState, action) => {
         isSignout: true,
         userToken: null,
         userType: null,
+        standard: null,
       };
     default:
       return state;

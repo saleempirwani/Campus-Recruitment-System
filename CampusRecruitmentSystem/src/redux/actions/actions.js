@@ -15,8 +15,10 @@ export const signIn = ({email, password}, userType = null) => async (
   dispatch,
 ) => {
   let token = null,
+    isUserExist = [],
+    standard = null,
     some = true;
-  /*
+
   try {
     let response = await firebase
       .auth()
@@ -27,38 +29,36 @@ export const signIn = ({email, password}, userType = null) => async (
   } catch (e) {
     alert(e.message);
     some = false;
-  }*/
+  }
 
-  if (true && userType) {
+  if (token && userType) {
     try {
       firebase
         .database()
         .ref(`users/${userType}`)
         .on('value', (snapshot) => {
           let users = snapshot.val();
-          let isUserExist;
+
           isUserExist = Object.values(users).map((user) =>
             user.email === email ? true : false,
           );
-          console.log('users =>', isUserExist);
+          // console.log('users =>', isUserExist);
+
+          if (userType === 'company') {
+            standard = Object.values(users).map((user) =>
+              user.email === email ? user.standard : null,
+            )[0];
+            storeData('standard', standard[0]);
+          }
         });
     } catch (e) {
       console.log('ERROR action.js/signIn', e.message);
     }
   }
 
-  if (userType) {
+  if (isUserExist.length && isUserExist[0]) {
     storeData('userToken', token);
-
-    if (userType === 'admin') {
-      userType = null;
-    } else if (userType === 'student') {
-      userType = 'donor';
-      storeData('userType', userType);
-    } else if (userType === 'company') {
-      userType = 'donor';
-      storeData('userType', userType);
-    }
+    storeData('userType', userType);
   } else {
     if (some) alert('Something went wrong, could not sign in.');
     token = null;
@@ -71,6 +71,7 @@ export const signIn = ({email, password}, userType = null) => async (
     payload: {
       token: token,
       userType: userType,
+      standard: standard,
     },
   });
 };
@@ -78,8 +79,11 @@ export const signIn = ({email, password}, userType = null) => async (
 // SIGN_UP FUNCTION HERE...
 export const signUp = (data, userType = null) => async (dispatch) => {
   let token = null,
+    standard = null,
     path = null,
     some = true;
+
+  if (userType === 'company') standard = data.profile.standard;
 
   // Firebase SignUp Code
   try {
@@ -113,7 +117,7 @@ export const signUp = (data, userType = null) => async (dispatch) => {
     try {
       const id = firebase.database().ref().child(path).push().key;
       const users = {};
-      users[`${path}/${id}`] = {...data.profile, id};
+      users[`${path}/${id}`] = {...data.profile, id: id};
       firebase.database().ref().update(users);
       storeData('userToken', token);
     } catch (e) {
@@ -131,6 +135,7 @@ export const signUp = (data, userType = null) => async (dispatch) => {
     payload: {
       token: token,
       userType: userType,
+      standard: standard,
     },
   });
 };
@@ -139,21 +144,37 @@ export const singOut = () => async (dispatch) => {
   await firebase.auth().signOut();
   removeData('userToken');
   removeData('userType');
+  removeData('standard');
   return dispatch({type: SIGN_OUT});
 };
 
-export const restoreToken = (userToken, userType) => {
+export const restoreToken = (userToken, userType, standard) => {
   return {
     type: RESTORE_TOKEN,
     payload: {
       token: userToken,
       userType: userType,
+      standard: standard,
     },
   };
 };
 
-// GETTING DATA
+// // UPDATING STUDENT DATA
 
+// export const updateStudent = (profile, userId) => {
+//   try {
+//     firebase
+//       .database()
+//       .ref('users/student/' + userId)
+//       .set({
+//         ...profile,
+//       });
+//   } catch (error) {
+//     console.log('updateStudent => ', error);
+//   }
+// };
+
+// GETTING DATA
 export const getCompanyData = (comp) => {
   console.log('getCompanyData', comp);
 

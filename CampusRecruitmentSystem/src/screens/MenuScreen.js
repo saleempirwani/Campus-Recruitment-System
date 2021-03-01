@@ -4,18 +4,18 @@ import {StyleSheet, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-elements';
 import globalStyle from '../styles/styles';
 
-const MenuScreen = () => {
+const MenuScreen = ({navigation}) => {
   return (
     <Container style={styles.container}>
       <TouchableOpacity
-        onPress={() => alert('dfdfgdfg')}
+        onPress={() => navigation.navigate('Students')}
         style={{...styles.box, ...globalStyle.themeRedBack}}>
         <Text h3 style={{color: 'white'}}>
           Students
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => alert('dfdfgdfg')}
+        onPress={() => navigation.navigate('Companies')}
         style={{...styles.box, ...globalStyle.themeBlueBack}}>
         <Text h3 style={{color: 'white'}}>
           Companies

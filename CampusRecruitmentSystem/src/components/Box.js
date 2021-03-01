@@ -8,10 +8,8 @@ const Box = ({comp}) => {
     <Card style={styles.card}>
       <CardItem>
         <Body>
-          <CardContent item="Company Name" value={comp.name} />
-          <CardContent item="Looking for" value={comp.need} />
-          <CardContent item="Phone" value={comp.phone} />
-          <CardContent item="Address" value={comp.address} />
+          <CardContent item="Company Name" value={comp.compName} />
+          <CardContent item="Looking for" value={comp.standard + ' students'} />
         </Body>
       </CardItem>
     </Card>

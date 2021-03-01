@@ -1,48 +1,47 @@
 import React from 'react';
-import {StyleSheet, View, Linking} from 'react-native';
+import {StyleSheet, View} from 'react-native';
+import {useSelector} from 'react-redux';
 
 import {CardItem, Body, Button, Text, Container} from 'native-base';
 import {CardContent} from '../components/CardItems';
 
+import firebase from '../config/firebase';
 import globalStyle from '../styles/styles';
 
-const std = ({route}) => {
-  // const std = route.params;
+const std = ({navigation, route}) => {
+  const std = route.params;
 
-  const std = {
-    name: 'ali',
-    collage: 'collage',
-    standard: 'standard',
-    marks: 'marks',
-    phone: '03313616378',
-    address: 'address',
-  };
+  const state = useSelector((state) => state.authReducer);
 
   return (
     <Container>
       <CardItem>
         <Body>
-          <CardContent item="Name" value={std.name} />
-          <CardContent item="Collage" value={std.collage} />
+          <CardContent item="Name" value={std.stdName} />
+          <CardContent item="Collage" value={std.stdCollage} />
           <CardContent item="Standard" value={std.standard} />
           <CardContent item="Marks" value={std.marks} />
-          <CardContent item="Phone" value={std.phone} />
-          <CardContent item="Address" value={std.address} />
+          <CardContent item="Phone" value={std.stdPhone} />
+          <CardContent item="Address" value={std.stdAddress} />
 
-          {true ? (
+          {state.userType === 'admin' ? (
             <View style={styles.btnContent}>
               <Button
                 medium
                 full
                 style={{...globalStyle.button, ...globalStyle.themeBlueBack}}
-                onPress={() => {}}>
+                onPress={() => {
+                  navigation.navigate('Edit Student', std);
+                }}>
                 <Text>Edit</Text>
               </Button>
               <Button
                 full
                 medium
                 style={{...globalStyle.button, ...globalStyle.themeRedBack}}
-                onPress={() => {}}>
+                onPress={() => {
+                  deleteStudent(std.id, navigation);
+                }}>
                 <Text>Delete</Text>
               </Button>
             </View>
@@ -61,3 +60,12 @@ const styles = StyleSheet.create({
 });
 
 export default std;
+
+const deleteStudent = (userId, navigation) => {
+  firebase
+    .database()
+    .ref('users/student/' + userId)
+    .remove();
+
+  navigation.navigate('Students');
+};
